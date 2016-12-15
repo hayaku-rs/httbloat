@@ -1,9 +1,11 @@
+use std::default::Default;
 use std::fmt::{self, Write};
 
 use chrono::UTC;
 
 use status::Status;
 
+#[derive(Clone, Debug)]
 pub struct Response {
     headers: Vec<(String, String)>,
     response: String,
@@ -11,14 +13,20 @@ pub struct Response {
     status_message: &'static str,
 }
 
-impl Response {
-    pub fn new() -> Response {
+impl Default for Response {
+    fn default() -> Self {
         Response {
             headers: Vec::new(),
             response: String::new(),
             status_code: 200,
             status_message: "OK",
         }
+    }
+}
+
+impl Response {
+    pub fn new() -> Response {
+        Default::default()
     }
 
     pub fn status(&mut self, status: Status) -> &mut Response {

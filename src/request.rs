@@ -1,7 +1,7 @@
 use tokio_core::io::EasyBuf;
 use httparse;
 
-use std::{io, mem};
+use std::io;
 
 use header::Header;
 use method::Method;
@@ -17,7 +17,7 @@ pub struct Request {
     path: String,
     version: Version,
     headers: Vec<(Header, String)>,
-    body: EasyBuf,
+    body: Option<Vec<u8>>,
 }
 
 impl Request {
@@ -37,17 +37,19 @@ impl Request {
         self.headers.clone()
     }
 
+    pub fn has_body(&self) -> bool {
+        self.body.is_some()
+    }
+
     pub fn body(&self) -> Option<&[u8]> {
-        if self.body.len() > 0 {
-            Some(self.body.as_slice())
-        } else {
-            None
+        match self.body {
+            Some(ref b) => Some(b),
+            None => None,
         }
     }
 }
 
 pub fn decode(buf: &mut EasyBuf) -> io::Result<Option<Request>> {
-    println!("{}", String::from_utf8_lossy(buf.as_slice()));
     let (method, path, version, headers, amt) = {
         let mut headers = [httparse::EMPTY_HEADER; MIN_HEADERS];
         let mut vec;
@@ -79,21 +81,12 @@ pub fn decode(buf: &mut EasyBuf) -> io::Result<Option<Request>> {
         (method, path, version, headers, amt)
     };
 
-    let body = buf.split_off(amt);
-    // mem::swap(&mut body, buf);
-    /*
-    let body = if buf.len() - amt > 0 {
-        let body = &buf.as_slice()[amt..];
-        Some(body.to_vec())
+    let _ = buf.drain_to(amt);
+    let body = if buf.len() > 0 {
+        Some(buf.as_slice().to_vec())
     } else {
         None
     };
-    println!("{}", body.is_none());
-    */
-
-
-
-
 
     Ok(Some(Request {
         method: method,
@@ -102,14 +95,4 @@ pub fn decode(buf: &mut EasyBuf) -> io::Result<Option<Request>> {
         headers: headers,
         body: body,
     }))
-}
-
-pub struct Body {
-    pub data: EasyBuf,
-}
-
-impl Body {
-    pub fn new(data: EasyBuf) -> Body {
-        Body { data: data }
-    }
 }
