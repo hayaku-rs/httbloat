@@ -1,5 +1,7 @@
 use std::default::Default;
 use std::fmt::{self, Write};
+use std::io;
+use std::io::Write as IoWrite;
 
 use chrono::UTC;
 
@@ -8,7 +10,7 @@ use status::Status;
 #[derive(Clone, Debug)]
 pub struct Response {
     headers: Vec<(String, String)>,
-    response: String,
+    response: Vec<u8>,
     status_code: u32,
     status_message: &'static str,
 }
@@ -17,7 +19,7 @@ impl Default for Response {
     fn default() -> Self {
         Response {
             headers: Vec::new(),
-            response: String::new(),
+            response: Vec::new(),
             status_code: 200,
             status_message: "OK",
         }
@@ -41,9 +43,24 @@ impl Response {
         self
     }
 
-    pub fn body(&mut self, s: &str) -> &mut Response {
-        self.response = s.to_string();
+    pub fn add_header(&mut self, name: String, value: String) -> &mut Response {
+        self.headers.push((name, value));
         self
+    }
+
+    pub fn body(&mut self, body: &[u8]) -> Result<&mut Response, io::Error> {
+        self.write_all(body)?;
+        Ok(self)
+    }
+}
+
+impl IoWrite for Response {
+    fn write(&mut self, buf: &[u8]) -> Result<usize, io::Error> {
+        self.response.write(buf)
+    }
+
+    fn flush(&mut self) -> Result<(), io::Error> {
+        Ok(())
     }
 }
 
@@ -70,7 +87,8 @@ pub fn encode(msg: Response, buf: &mut Vec<u8>) {
     }
 
     buf.extend_from_slice(b"\r\n");
-    buf.extend_from_slice(msg.response.as_bytes());
+    let mut response = msg.response;
+    buf.append(&mut response);
 }
 
 struct FastWrite<'a>(&'a mut Vec<u8>);
