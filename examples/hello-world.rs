@@ -1,3 +1,5 @@
+extern crate log;
+extern crate env_logger;
 extern crate futures;
 extern crate tokio_proto;
 extern crate tokio_service;
@@ -20,12 +22,13 @@ impl Service for HelloWorld {
 
     fn call(&self, req: Request) -> Self::Future {
         let mut resp = Response::new();
-        resp.body("Hello, world!");
+        resp.body(b"Hello, world!");
         future::ok(resp)
     }
 }
 
 fn main() {
+    env_logger::init();
     let addr = "0.0.0.0:3000".parse().unwrap();
     let mut srv = TcpServer::new(Http, addr);
     srv.threads(4);

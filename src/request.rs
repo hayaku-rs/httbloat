@@ -65,6 +65,8 @@ pub fn decode(buf: &mut EasyBuf) -> io::Result<Option<Request>> {
             Ok(httparse::Status::Complete(amt)) => amt,
             Ok(httparse::Status::Partial) => return Ok(None),
             Err(e) => {
+                // TODO(nokaa): We should see what happens when this is reached.
+                // Try sending request with more headers than MAX_HEADERS.
                 let msg = format!("failed to parse http request: {:?}", e);
                 return Err(io::Error::new(io::ErrorKind::Other, msg));
             }
@@ -83,7 +85,11 @@ pub fn decode(buf: &mut EasyBuf) -> io::Result<Option<Request>> {
 
     let _ = buf.drain_to(amt);
     let body = if buf.len() > 0 {
-        Some(buf.as_slice().to_vec())
+        // We need to make sure that all bytes are drained from the buf
+        let b = buf.as_slice().to_vec();
+        let len = buf.len();
+        let _ = buf.drain_to(len);
+        Some(b)
     } else {
         None
     };

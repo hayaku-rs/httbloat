@@ -16,3 +16,6 @@ git = "https://github.com/tokio-rs/tokio-proto"
 
 [dependencies.tokio-service]
 git = "https://github.com/tokio-rs/tokio-service"
+
+[dev-dependencies]
+env_logger = "0.3"
