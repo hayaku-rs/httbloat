@@ -10,8 +10,6 @@ use version::Version;
 const MIN_HEADERS: usize = 16;
 const MAX_HEADERS: usize = 1024;
 
-type Slice = (usize, usize);
-
 pub struct Request {
     method: Method,
     path: String,
