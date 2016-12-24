@@ -48,9 +48,10 @@ impl Response {
         self
     }
 
-    pub fn body(&mut self, body: &[u8]) -> Result<&mut Response, io::Error> {
-        self.write_all(body)?;
-        Ok(self)
+    pub fn body(&mut self, body: &[u8]) -> &mut Response {
+        // Write for `Vec` always returns `Ok`, so it is safe to unwrap.
+        self.write_all(body).unwrap();
+        self
     }
 }
 

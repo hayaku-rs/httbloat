@@ -22,7 +22,7 @@ impl Service for HelloWorld {
 
     fn call(&mut self, _req: Request) -> Self::Future {
         let mut resp = Response::new();
-        resp.body(b"Hello, world!").unwrap();
+        resp.body(b"Hello, world!");
         future::ok(resp)
     }
 }
