@@ -20,15 +20,15 @@ impl Service for HelloWorld {
     type Error = io::Error;
     type Future = future::Ok<Response, io::Error>;
 
-    fn call(&self, req: Request) -> Self::Future {
+    fn call(&mut self, _req: Request) -> Self::Future {
         let mut resp = Response::new();
-        resp.body(b"Hello, world!");
+        resp.body(b"Hello, world!").unwrap();
         future::ok(resp)
     }
 }
 
 fn main() {
-    env_logger::init();
+    env_logger::init().unwrap();
     let addr = "0.0.0.0:3000".parse().unwrap();
     let mut srv = TcpServer::new(Http, addr);
     srv.threads(4);
