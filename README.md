@@ -1,3 +1,3 @@
 # httbloat
 
-An HTTP library.
+An async HTTP library built on tokio. Built for [hayaku](https://github.com/hayaku-rs/hayaku).
