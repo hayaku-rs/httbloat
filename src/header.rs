@@ -1,6 +1,7 @@
 use std::convert::From;
 use std::ascii::AsciiExt;
 
+/// Headers that may be used by an HTTP request or response.
 #[derive(Clone, Debug, PartialEq)]
 pub enum Header {
     Host,

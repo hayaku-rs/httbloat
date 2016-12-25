@@ -10,6 +10,7 @@ use version::Version;
 const MIN_HEADERS: usize = 16;
 const MAX_HEADERS: usize = 1024;
 
+/// An HTTP request.
 pub struct Request {
     method: Method,
     path: String,
@@ -19,26 +20,32 @@ pub struct Request {
 }
 
 impl Request {
+    /// Returns the HTTP method used by this request.
     pub fn method(&self) -> Method {
         self.method.clone()
     }
 
+    /// Returns the requested path.
     pub fn path(&self) -> String {
         self.path.clone()
     }
 
+    /// Returns the HTTP version used by this request.
     pub fn version(&self) -> Version {
         self.version
     }
 
+    /// Returns a `Vec` of Headers sent with this request.
     pub fn headers(&self) -> Vec<(Header, String)> {
         self.headers.clone()
     }
 
+    /// Returns true if the request included a body.
     pub fn has_body(&self) -> bool {
         self.body.is_some()
     }
 
+    /// Returns the request body if one was included.
     pub fn body(&self) -> Option<&[u8]> {
         match self.body {
             Some(ref b) => Some(b),

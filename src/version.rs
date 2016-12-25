@@ -1,5 +1,6 @@
 use std::fmt;
 
+/// The HTTP version used by the request.
 #[derive(Copy, Clone, Debug, PartialEq, Eq)]
 pub enum Version {
     Http10,

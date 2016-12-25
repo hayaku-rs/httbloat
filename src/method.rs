@@ -1,3 +1,4 @@
+/// The different HTTP methods that a request might use.
 #[derive(Clone, Debug, Hash, PartialEq, Eq)]
 pub enum Method {
     Connect,

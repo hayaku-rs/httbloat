@@ -7,6 +7,7 @@ use chrono::UTC;
 
 use status::Status;
 
+/// An HTTP response.
 #[derive(Clone, Debug)]
 pub struct Response {
     headers: Vec<(String, String)>,
@@ -27,27 +28,32 @@ impl Default for Response {
 }
 
 impl Response {
+    /// Creates a new response with status `200 OK`.
     pub fn new() -> Response {
         Default::default()
     }
 
+    /// Sets the status for the response.
     pub fn status(&mut self, status: Status) -> &mut Response {
         self.status_code = status.code();
         self.status_message = status.reason();
         self
     }
 
+    /// Sets a custom status for the response.
     pub fn custom_status(&mut self, code: u32, reason: &'static str) -> &mut Response {
         self.status_code = code;
         self.status_message = reason;
         self
     }
 
+    /// Adds a header to the response with the given `name` and `value`.
     pub fn add_header(&mut self, name: String, value: String) -> &mut Response {
         self.headers.push((name, value));
         self
     }
 
+    /// Sets the body of the response.
     pub fn body(&mut self, body: &[u8]) -> &mut Response {
         // Write for `Vec` always returns `Ok`, so it is safe to unwrap.
         self.write_all(body).unwrap();
