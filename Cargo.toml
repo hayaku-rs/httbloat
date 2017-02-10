@@ -7,15 +7,10 @@ version = "0.1.0"
 chrono = "0.2.25"
 futures = "0.1"
 httparse = "1.1.2"
-log = "0.3.6"
 matches = "0.1.4"
 tokio-core = "0.1"
-
-[dependencies.tokio-proto]
-git = "https://github.com/tokio-rs/tokio-proto"
-
-[dependencies.tokio-service]
-git = "https://github.com/tokio-rs/tokio-service"
+tokio-proto = "0.1.0"
+tokio-service = "0.1.0"
 
 [dev-dependencies]
 env_logger = "0.3"

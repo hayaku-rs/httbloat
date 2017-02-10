@@ -1,6 +1,4 @@
 #[macro_use]
-extern crate log;
-#[macro_use]
 extern crate matches;
 extern crate futures;
 extern crate tokio_core;
@@ -33,7 +31,6 @@ pub struct Http;
 impl<T: Io + 'static> ServerProto<T> for Http {
     type Request = Request;
     type Response = Response;
-    type Error = io::Error;
     type Transport = Framed<T, HttpCodec>;
     type BindTransport = io::Result<Self::Transport>;
 
